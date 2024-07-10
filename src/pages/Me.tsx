@@ -10,7 +10,7 @@ export const MePage = () => {
 
   return (
     <div className="flex-1 flex h-screen">
-      <div className="m-4 shadow-lg rounded-xl w-full flex-1  bg-gray-100 ">
+      <div className="m-4 shadow-lg rounded-xl w-full flex-1  bg-gray-100 overflow-hidden">
         <div className="bg-gray-300 flex-row p-4 flex justify-between items-center relative">
           <div className="bg-gray-300 flex-row flex items-center">
             <img

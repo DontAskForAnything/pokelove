@@ -106,22 +106,27 @@ export const PokemonDetailsPage = () => {
               </div>
             </div>
           </div>
-          <div
-            onClick={(event) => {
-              event.preventDefault();
-              if (favIds?.includes(pokemon?.id) && user?.id) {
-                removeFavorite(user.id, pokemon.id, removeFavId);
-              } else {
-                user?.id && addToFavorites(user.id, pokemon.id, addFavId);
-              }
-            }}
-          >
-            {favIds?.includes(pokemon?.id) ? (
-              <FaHeart className="absolute top-10 z-50 hover:scale-110 right-12 w-8 h-8 text-pink-500 " />
-            ) : (
-              <FaRegHeart className="absolute top-10 right-12 w-8 h-8 z-50 hover:scale-110  text-pink-500 " />
-            )}
-          </div>
+          {user?.id && (
+            <>
+              {" "}
+              <div
+                onClick={(event) => {
+                  event.preventDefault();
+                  if (favIds?.includes(pokemon?.id) && user?.id) {
+                    removeFavorite(user.id, pokemon.id, removeFavId);
+                  } else {
+                    user?.id && addToFavorites(user.id, pokemon.id, addFavId);
+                  }
+                }}
+              >
+                {favIds?.includes(pokemon?.id) ? (
+                  <FaHeart className="absolute top-10 z-50 hover:scale-110 right-12 w-8 h-8 text-pink-500 " />
+                ) : (
+                  <FaRegHeart className="absolute top-10 right-12 w-8 h-8 z-50 hover:scale-110  text-pink-500 " />
+                )}
+              </div>{" "}
+            </>
+          )}
         </div>
       </div>
     </div>

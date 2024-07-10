@@ -53,7 +53,7 @@ export const PokemonBox = ({
       }}
       className="flex sm:flex-col lg:flex-row items-center justify-around rounded-lg shadow-lg overflow-hidden w-full relative hover:scale-105 transition bg-white transform"
     >
-      {!justDisplay && (
+      {!justDisplay && user?.id && (
         <div
           onClick={(event) => {
             event.preventDefault();
