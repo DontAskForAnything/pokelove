@@ -51,7 +51,7 @@ export const PokemonBox = ({
       onClick={() => {
         !justDisplay && navigate(`/pokemon/${pokemonDetails?.id}`);
       }}
-      className="flex flex-row items-center justify-center rounded-lg shadow-lg overflow-hidden w-full relative hover:scale-105 transition bg-white transform"
+      className="flex sm:flex-col lg:flex-row items-center justify-around rounded-lg shadow-lg overflow-hidden w-full relative hover:scale-105 transition bg-white transform"
     >
       {!justDisplay && (
         <div
@@ -78,8 +78,8 @@ export const PokemonBox = ({
           src={pokemonDetails?.sprites.other["official-artwork"].front_default}
           alt={pokemonDetails?.name}
           width={300}
-          height={200}
-          className="w-full h-48 object-cover"
+          // height={200}
+          className="h-full my-4  max-w-45  object-cover"
         />
       </div>
       <div className="p-4">

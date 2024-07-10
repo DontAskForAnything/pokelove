@@ -18,25 +18,36 @@ import { addToFavorites, removeFavorite } from "../utils/supabaseRequests";
 
 export const PokemonDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
-
   const [pokemon, setPokemon] = useState<PokemonDetails | null>(null);
   const { favIds, addFavId, removeFavId } = useFavIds();
   const { user } = useUser();
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchPokemonData = async () => {
       try {
-        // Fetch Pokemon data
+        const startTime = Date.now();
+
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_API_URL}/pokemon/${id}`,
         );
-        setPokemon(response.data);
-        const speciesUrl = response.data.species.url;
-        const speciesResponse = await axios.get(speciesUrl);
-        const evolutionChainUrl = speciesResponse.data.evolution_chain.url;
-        const evolutionChainResponse = await axios.get(evolutionChainUrl);
-        const evolutionChainData = evolutionChainResponse.data;
-        console.log("evolution", evolutionChainData);
+
+        const elapsedTime = Date.now() - startTime;
+        const delay = Math.max(1500 - elapsedTime, 0);
+
+        if (isMounted) {
+          setTimeout(() => {
+            setPokemon(response.data);
+          }, delay);
+
+          const speciesUrl = response.data.species.url;
+          const speciesResponse = await axios.get(speciesUrl);
+          const evolutionChainUrl = speciesResponse.data.evolution_chain.url;
+          const evolutionChainResponse = await axios.get(evolutionChainUrl);
+          const evolutionChainData = evolutionChainResponse.data;
+          console.log("evolution", evolutionChainData);
+        }
       } catch (error) {
         console.error("Error fetching Pokemon data:", error);
       }
@@ -44,7 +55,9 @@ export const PokemonDetailsPage = () => {
 
     fetchPokemonData();
 
-    return () => {};
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   if (!pokemon) {

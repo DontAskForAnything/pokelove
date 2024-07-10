@@ -10,11 +10,34 @@ export const UserPage = () => {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<UserWithFavorites | null>();
   const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
-    id &&
+    let isMounted = true;
+
+    if (id) {
+      const startTime = Date.now();
+
       fetchUserDataAndFavorites(id)
-        .then((data) => setData(data))
-        .finally(() => setLoading(false));
+        .then((data) => {
+          const elapsedTime = Date.now() - startTime;
+          const delay = Math.max(2000 - elapsedTime, 0);
+
+          if (isMounted) {
+            setTimeout(() => {
+              setData(data);
+              setLoading(false);
+            }, delay);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+          setLoading(false);
+        });
+    }
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   if (loading) {

@@ -51,7 +51,7 @@ const PokemonList: React.FC = () => {
   );
 
   return (
-    <div className="grid grid-cols-2 gap-5">
+    <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-8">
       {pokemons.map((pokemon, index) => {
         return (
           <PokemonBox
