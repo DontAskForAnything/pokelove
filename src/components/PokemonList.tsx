@@ -19,7 +19,7 @@ const PokemonList: React.FC = () => {
     const offset = (page - 1) * itemsPerPage;
     try {
       const response = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${itemsPerPage}`,
+        `${import.meta.env.VITE_BASE_API_URL}/pokemon?offset=${offset}&limit=${itemsPerPage}`,
       );
       const newPokemons = response.data.results.map((result: Pokemon) => ({
         name: result.name,
@@ -51,15 +51,19 @@ const PokemonList: React.FC = () => {
   );
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Pokémon List</h1>
-      <div className="grid grid-cols-2 gap-5">
-        {pokemons.map((pokemon, index) => (
-          <PokemonBox key={index} pokemon={pokemon} />
-        ))}
-        {isLoading && <div className="text-center py-4">Loading...</div>}
-        <div ref={lastPokemonElementRef}></div>
-      </div>
+    <div className="grid grid-cols-2 gap-5">
+      {pokemons.map((pokemon, index) => {
+        return (
+          <PokemonBox
+            key={index}
+            id={Number(
+              pokemon.url.split("/")[pokemon.url.split("/").length - 2],
+            )}
+          />
+        );
+      })}
+      {isLoading && <div className="text-center py-4">Loading...</div>}
+      <div ref={lastPokemonElementRef} />
     </div>
   );
 };

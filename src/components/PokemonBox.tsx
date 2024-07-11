@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { Pokemon, PokemonDetails } from "../utils/interfaces";
+import { PokemonDetails } from "../utils/interfaces";
 import {
   LuCloudLightning,
   LuGauge,
@@ -8,18 +8,24 @@ import {
   LuSnowflake,
   LuSwords,
 } from "react-icons/lu";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { addToFavorites, removeFavorite } from "../utils/supabaseRequests";
+import { useClerk } from "@clerk/clerk-react";
+import { useFavIds } from "../utils/useFavIds";
 
-export const PokemonBox = ({ pokemon }: { pokemon: Pokemon }) => {
+export const PokemonBox = ({ id }: { id: number }) => {
   const [pokemonDetails, setPokemonDetails] = useState<PokemonDetails | null>(
     null,
   );
-
+  const { favIds, addFavId, removeFavId } = useFavIds();
+  const { user } = useClerk();
   useEffect(() => {
     const fetchPokemonDetails = async () => {
       try {
-        const response = await axios.get(pokemon.url);
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_API_URL}/pokemon/${id}`,
+        );
         setPokemonDetails(response.data);
       } catch (error) {
         console.error("Error fetching Pokémon details:", error);
@@ -27,17 +33,32 @@ export const PokemonBox = ({ pokemon }: { pokemon: Pokemon }) => {
     };
 
     fetchPokemonDetails();
-  }, [pokemon.url]);
+  }, [id]);
 
   if (!pokemonDetails) {
-    // TODO: add search on main page, add more info on details, and add login, and favourites
     return <></>;
   }
   return (
     <Link
       to={`/pokemon/${pokemonDetails?.id}`}
-      className="flex flex-row items-center justify-center rounded-lg shadow-lg overflow-hidden w-full relative hover:scale-105 transition transform"
+      className="flex flex-row items-center justify-center rounded-lg shadow-lg overflow-hidden w-full relative hover:scale-105 transition bg-white transform"
     >
+      <div
+        onClick={(event) => {
+          event.preventDefault();
+          if (favIds?.includes(pokemonDetails?.id) && user?.id) {
+            removeFavorite(user.id, pokemonDetails.id, removeFavId);
+          } else {
+            user?.id && addToFavorites(user.id, pokemonDetails.id, addFavId);
+          }
+        }}
+      >
+        {favIds?.includes(pokemonDetails?.id) ? (
+          <FaHeart className="absolute top-4 z-50 hover:scale-110 right-6 w-5 h-5 text-pink-500 " />
+        ) : (
+          <FaRegHeart className="absolute top-4 right-6 w-5 h-5 z-50 hover:scale-110  text-pink-500 " />
+        )}
+      </div>
       <div className="relative">
         <img
           src={pokemonDetails?.sprites.other["official-artwork"].front_default}
@@ -49,7 +70,7 @@ export const PokemonBox = ({ pokemon }: { pokemon: Pokemon }) => {
       </div>
       <div className="p-4">
         <h3 className="text-xl font-bold mb-2">
-          {pokemon.name.toUpperCase()}{" "}
+          {pokemonDetails.name.toUpperCase()}{" "}
           <span className="opacity-50">
             #{pokemonDetails?.id.toString().padStart(4, "0")}
           </span>

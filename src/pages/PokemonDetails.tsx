@@ -23,7 +23,7 @@ export const PokemonDetailsPage = () => {
       try {
         // Fetch Pokemon data
         const response = await axios.get(
-          `https://pokeapi.co/api/v2/pokemon/${id}`,
+          `${import.meta.env.VITE_BASE_API_URL}/pokemon/${id}`,
         );
         setPokemon(response.data);
         const speciesUrl = response.data.species.url;
@@ -31,7 +31,7 @@ export const PokemonDetailsPage = () => {
         const evolutionChainUrl = speciesResponse.data.evolution_chain.url;
         const evolutionChainResponse = await axios.get(evolutionChainUrl);
         const evolutionChainData = evolutionChainResponse.data;
-        console.log(evolutionChainData);
+        console.log("evolution", evolutionChainData);
       } catch (error) {
         console.error("Error fetching Pokemon data:", error);
       }
@@ -87,9 +87,9 @@ export const PokemonDetailsPage = () => {
   }
 
   return (
-    <div className="  flex-1  h-screen flex">
+    <div className="flex-1  h-screen flex">
       <div className=" m-4 shadow-lg rounded-xl overflow-hidden flex-1  flex bg-pink-500">
-        <div className="flex-1 bg-gray-200 flex justify-center items-center ">
+        <div className="flex-1 bg-gray-300 flex justify-center items-center ">
           <img
             src={pokemon.sprites.other["official-artwork"].front_default}
             alt={pokemon.name}
