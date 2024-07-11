@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { PokemonBox } from "../components/PokemonBox";
 import { useFavIds } from "../utils/useFavIds";
 
-export const UserPage = () => {
+export const MePage = () => {
   const { user } = useUser();
   const navigate = useNavigate();
   const { favIds, removeFavId } = useFavIds();

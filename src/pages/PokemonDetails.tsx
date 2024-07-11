@@ -8,15 +8,20 @@ import {
   LuSnowflake,
   LuSwords,
 } from "react-icons/lu";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import axios from "axios";
 import { Loading } from "../components/Loding";
+import { convertDecimeters, convertHectograms } from "../utils/calculations";
+import { useFavIds } from "../utils/useFavIds";
+import { useClerk } from "@clerk/clerk-react";
+import { addToFavorites, removeFavorite } from "../utils/supabaseRequests";
 
-// Component for displaying Pokemon details based on ID
 export const PokemonDetailsPage = () => {
-  const { id } = useParams<{ id: string }>(); // Accessing URL parameter 'id'
+  const { id } = useParams<{ id: string }>();
 
   const [pokemon, setPokemon] = useState<PokemonDetails | null>(null);
+  const { favIds, addFavId, removeFavId } = useFavIds();
+  const { user } = useClerk();
 
   useEffect(() => {
     const fetchPokemonData = async () => {
@@ -46,46 +51,6 @@ export const PokemonDetailsPage = () => {
     return <Loading />;
   }
 
-  function convertDecimeters(decimeters: number) {
-    // Calculate meters and centimeters
-    const meters = Math.floor(decimeters / 10); // 1 meter is 10 decimeters
-    const centimeters = (decimeters % 10) * 10; // 1 decimeter is 10 centimeters
-
-    // Construct the result string
-    let result = "";
-
-    if (meters > 0) {
-      result += `${meters} m`;
-    }
-
-    if (centimeters > 0) {
-      if (result !== "") result += " "; // Add space if meters were included
-      result += `${centimeters} cm`;
-    }
-
-    return result;
-  }
-
-  function convertHectograms(hectograms: number) {
-    // Calculate kilograms and grams
-    const kilograms = Math.floor(hectograms / 10); // 1 kilogram is 10 hectograms
-    const grams = (hectograms % 10) * 100; // 1 hectogram is 100 grams
-
-    // Construct the result string
-    let result = "";
-
-    if (kilograms > 0) {
-      result += `${kilograms} kg`;
-    }
-
-    if (grams > 0) {
-      if (result !== "") result += " "; // Add space if kilograms were included
-      result += `${grams} g`;
-    }
-
-    return result;
-  }
-
   return (
     <div className="flex-1  h-screen flex">
       <div className=" m-4 shadow-lg rounded-xl overflow-hidden flex-1  flex bg-pink-500">
@@ -96,7 +61,7 @@ export const PokemonDetailsPage = () => {
             className="max-w-full max-h-full"
           />
         </div>
-        <div className="flex-1 bg-gray-100 p-8 items-center  justify-center">
+        <div className="flex-1 bg-gray-100 p-8 items-center  justify-center relative">
           <h2 className="text-3xl font-bold mb-2 text-center">
             {pokemon.name.toUpperCase()}{" "}
             <span className="opacity-60">
@@ -127,6 +92,22 @@ export const PokemonDetailsPage = () => {
                 ))}
               </div>
             </div>
+          </div>
+          <div
+            onClick={(event) => {
+              event.preventDefault();
+              if (favIds?.includes(pokemon?.id) && user?.id) {
+                removeFavorite(user.id, pokemon.id, removeFavId);
+              } else {
+                user?.id && addToFavorites(user.id, pokemon.id, addFavId);
+              }
+            }}
+          >
+            {favIds?.includes(pokemon?.id) ? (
+              <FaHeart className="absolute top-10 z-50 hover:scale-110 right-12 w-8 h-8 text-pink-500 " />
+            ) : (
+              <FaRegHeart className="absolute top-10 right-12 w-8 h-8 z-50 hover:scale-110  text-pink-500 " />
+            )}
           </div>
         </div>
       </div>

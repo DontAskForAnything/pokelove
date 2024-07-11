@@ -39,3 +39,16 @@ export interface PokemonDetails {
 
   stats: PokemonStat[];
 }
+interface User {
+  user_id: string;
+  username: string;
+  first_name: string;
+  last_name: string | null;
+  image_url: string;
+  created_at: string;
+}
+
+export interface UserWithFavorites {
+  user: User;
+  favorite_pokemons_id: number[];
+}

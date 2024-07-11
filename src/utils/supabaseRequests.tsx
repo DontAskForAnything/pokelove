@@ -1,3 +1,4 @@
+import { UserWithFavorites } from "./interfaces";
 import { supabase } from "./supabase";
 
 export async function fetchFavorites(
@@ -55,3 +56,57 @@ export async function addToFavorites(
   }
   addFavId(pokemon_id);
 }
+
+export const fetchUserDataAndFavorites = async (
+  userId: string,
+): Promise<UserWithFavorites | null> => {
+  try {
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("user_id", userId)
+      .single();
+
+    if (userError) {
+      throw new Error(`Error fetching user data: ${userError.message}`);
+    }
+
+    const { data: favoritePokemons, error: favoriteError } = await supabase
+      .from("favorites")
+      .select("pokemon_id")
+      .eq("user_id", userId);
+
+    if (favoriteError) {
+      throw new Error(
+        `Error fetching favorite Pokemon IDs: ${favoriteError.message}`,
+      );
+    }
+
+    const favoritePokemonIds = favoritePokemons.map(
+      (pokemon) => pokemon.pokemon_id,
+    );
+
+    return {
+      user: userData,
+      favorite_pokemons_id: favoritePokemonIds,
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return null;
+  }
+};
+
+export const getRandomUsers = async (limit: number = 5) => {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .order("random()")
+    .limit(limit);
+
+  if (error) {
+    console.error("Error while removing favourite pokemon:", error.message);
+    return;
+  }
+  console.log("Random Users:", data);
+  return data;
+};

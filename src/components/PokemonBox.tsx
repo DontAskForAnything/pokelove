@@ -9,17 +9,25 @@ import {
   LuSwords,
 } from "react-icons/lu";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { addToFavorites, removeFavorite } from "../utils/supabaseRequests";
 import { useClerk } from "@clerk/clerk-react";
 import { useFavIds } from "../utils/useFavIds";
 
-export const PokemonBox = ({ id }: { id: number }) => {
+export const PokemonBox = ({
+  id,
+  justDisplay = false,
+}: {
+  id: number;
+  justDisplay?: boolean;
+}) => {
   const [pokemonDetails, setPokemonDetails] = useState<PokemonDetails | null>(
     null,
   );
   const { favIds, addFavId, removeFavId } = useFavIds();
   const { user } = useClerk();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchPokemonDetails = async () => {
       try {
@@ -39,26 +47,30 @@ export const PokemonBox = ({ id }: { id: number }) => {
     return <></>;
   }
   return (
-    <Link
-      to={`/pokemon/${pokemonDetails?.id}`}
+    <div
+      onClick={() => {
+        !justDisplay && navigate(`/pokemon/${pokemonDetails?.id}`);
+      }}
       className="flex flex-row items-center justify-center rounded-lg shadow-lg overflow-hidden w-full relative hover:scale-105 transition bg-white transform"
     >
-      <div
-        onClick={(event) => {
-          event.preventDefault();
-          if (favIds?.includes(pokemonDetails?.id) && user?.id) {
-            removeFavorite(user.id, pokemonDetails.id, removeFavId);
-          } else {
-            user?.id && addToFavorites(user.id, pokemonDetails.id, addFavId);
-          }
-        }}
-      >
-        {favIds?.includes(pokemonDetails?.id) ? (
-          <FaHeart className="absolute top-4 z-50 hover:scale-110 right-6 w-5 h-5 text-pink-500 " />
-        ) : (
-          <FaRegHeart className="absolute top-4 right-6 w-5 h-5 z-50 hover:scale-110  text-pink-500 " />
-        )}
-      </div>
+      {!justDisplay && (
+        <div
+          onClick={(event) => {
+            event.preventDefault();
+            if (favIds?.includes(pokemonDetails?.id) && user?.id) {
+              removeFavorite(user.id, pokemonDetails.id, removeFavId);
+            } else {
+              user?.id && addToFavorites(user.id, pokemonDetails.id, addFavId);
+            }
+          }}
+        >
+          {favIds?.includes(pokemonDetails?.id) ? (
+            <FaHeart className="absolute top-4 z-50 hover:scale-110 right-6 w-5 h-5 text-pink-500 " />
+          ) : (
+            <FaRegHeart className="absolute top-4 right-6 w-5 h-5 z-50 hover:scale-110  text-pink-500 " />
+          )}
+        </div>
+      )}
       <div className="relative">
         <img
           src={pokemonDetails?.sprites.other["official-artwork"].front_default}
@@ -106,6 +118,6 @@ export const PokemonBox = ({ id }: { id: number }) => {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
