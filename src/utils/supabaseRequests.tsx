@@ -1,4 +1,4 @@
-import { UserWithFavorites } from "./interfaces";
+import { User, UserWithFavorites } from "./interfaces";
 import { supabase } from "./supabase";
 
 export async function fetchFavorites(
@@ -96,17 +96,16 @@ export const fetchUserDataAndFavorites = async (
   }
 };
 
-export const getRandomUsers = async (limit: number = 5) => {
+export const getRandomUsers = async (user_id: string): Promise<User[]> => {
   const { data, error } = await supabase
-    .from("users")
+    .from("random_users")
     .select("*")
-    .order("random()")
-    .limit(limit);
+    .neq("user_id", user_id);
 
   if (error) {
     console.error("Error while removing favourite pokemon:", error.message);
-    return;
+    throw new Error(error.message);
   }
-  console.log("Random Users:", data);
+
   return data;
 };

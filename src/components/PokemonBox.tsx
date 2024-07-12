@@ -57,12 +57,14 @@ export const PokemonBox = ({
         <div
           onClick={(event) => {
             event.preventDefault();
+            event.stopPropagation();
             if (favIds?.includes(pokemonDetails?.id) && user?.id) {
               removeFavorite(user.id, pokemonDetails.id, removeFavId);
             } else {
               user?.id && addToFavorites(user.id, pokemonDetails.id, addFavId);
             }
           }}
+          className="cursor-pointer"
         >
           {favIds?.includes(pokemonDetails?.id) ? (
             <FaHeart className="absolute top-4 z-50 hover:scale-110 right-6 w-5 h-5 text-pink-500 " />

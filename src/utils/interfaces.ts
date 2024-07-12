@@ -39,7 +39,7 @@ export interface PokemonDetails {
 
   stats: PokemonStat[];
 }
-interface User {
+export interface User {
   user_id: string;
   username: string;
   first_name: string;

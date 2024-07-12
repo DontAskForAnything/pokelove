@@ -1,11 +1,9 @@
 import { SignOutButton, useUser } from "@clerk/clerk-react";
-import { useNavigate } from "react-router-dom";
 import { PokemonBox } from "../components/PokemonBox";
 import { useFavIds } from "../utils/useFavIds";
 
 export const MePage = () => {
   const { user } = useUser();
-  const navigate = useNavigate();
   const { favIds, removeFavId } = useFavIds();
 
   return (
@@ -14,7 +12,6 @@ export const MePage = () => {
         <div className="bg-gray-300 flex-row p-4 flex justify-between items-center relative">
           <div className="bg-gray-300 flex-row flex items-center">
             <img
-              onClick={() => navigate("/me")}
               src={user?.imageUrl}
               alt={"@" + user?.username + "avatar"}
               className="h-24 aspect-square rounded-xl hover:scale-105 cursor-pointer"
