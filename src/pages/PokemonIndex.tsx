@@ -10,11 +10,11 @@ export const PokemonIndexPage = () => {
   return (
     <>
       <div className="container mx-auto p-4">
-        <div className="mt-16">
+        <div className="mt-20">
           <div className=" fixed top-0 z-20 bg-gray-200 right-0 left-0 ">
             <div className="flex justify-between items-center h-20 mx-auto container p-4 relative">
               <RandomUsers />
-              <h1 className="text-2xl font-bold text-center  absolute w-full mx-auto">
+              <h1 className="text-2xl font-bold text-center -z-10 absolute w-full mx-auto">
                 Pokémon List
               </h1>
 

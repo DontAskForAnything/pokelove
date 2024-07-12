@@ -11,7 +11,7 @@ import {
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { addToFavorites, removeFavorite } from "../utils/supabaseRequests";
-import { useClerk } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
 import { useFavIds } from "../utils/useFavIds";
 
 export const PokemonBox = ({
@@ -25,7 +25,7 @@ export const PokemonBox = ({
     null,
   );
   const { favIds, addFavId, removeFavId } = useFavIds();
-  const { user } = useClerk();
+  const { user } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {

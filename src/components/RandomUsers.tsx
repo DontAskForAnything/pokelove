@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import "./Loading.css";
 import { getRandomUsers } from "../utils/supabaseRequests";
-import { useClerk } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
 import { User } from "../utils/interfaces";
 import { useNavigate } from "react-router-dom";
 
 export const RandomUsers = () => {
-  const { user } = useClerk();
+  const { user } = useUser();
   const [randomUsers, setRandomUsers] = useState<User[]>([]);
   const navigate = useNavigate();
   useEffect(() => {

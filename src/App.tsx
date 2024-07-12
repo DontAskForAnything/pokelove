@@ -28,18 +28,14 @@ function App() {
         <Route
           path="/me/"
           element={
-            <SignedIn>
-              <MePage />
-            </SignedIn>
-          }
-        />
-
-        <Route
-          path="/me/"
-          element={
-            <SignedOut>
-              <Navigate to="/" replace />
-            </SignedOut>
+            <>
+              <SignedIn>
+                <MePage />
+              </SignedIn>
+              <SignedOut>
+                <Navigate to="/" replace />
+              </SignedOut>
+            </>
           }
         />
       </Routes>

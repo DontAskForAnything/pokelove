@@ -13,7 +13,7 @@ import axios from "axios";
 import { Loading } from "../components/Loding";
 import { convertDecimeters, convertHectograms } from "../utils/calculations";
 import { useFavIds } from "../utils/useFavIds";
-import { useClerk } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
 import { addToFavorites, removeFavorite } from "../utils/supabaseRequests";
 
 export const PokemonDetailsPage = () => {
@@ -21,7 +21,7 @@ export const PokemonDetailsPage = () => {
 
   const [pokemon, setPokemon] = useState<PokemonDetails | null>(null);
   const { favIds, addFavId, removeFavId } = useFavIds();
-  const { user } = useClerk();
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchPokemonData = async () => {
