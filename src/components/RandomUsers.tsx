@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./Loading.css";
 import { getRandomUsers } from "../utils/supabaseRequests";
 import { useUser } from "@clerk/clerk-react";
 import { User } from "../utils/interfaces";
@@ -17,14 +16,14 @@ export const RandomUsers = () => {
   }, [user]);
 
   return (
-    <div className="h-full gap-2 flex flex-row">
+    <div className="h-full gap-2 flex flex-row z-50">
       {randomUsers.map((user, index) => (
         <img
           onClick={() => navigate(`/user/${user.user_id}`)}
           key={index}
           src={user?.image_url}
           alt={"@" + user?.username + " avatar"}
-          className="h-full aspect-square  rounded-xl  cursor-pointer"
+          className="h-full aspect-square  rounded-xl  cursor-pointer drag-none transition hover:scale-110"
         />
       ))}
     </div>

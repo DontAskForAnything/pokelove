@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { fetchFavorites } from "./utils/supabaseRequests";
 import { useFavIds } from "./utils/useFavIds";
 import { UserPage } from "./pages/UserPage";
+import { Page404 } from "./pages/404";
 
 function App() {
   const { setArrayOfFavIds } = useFavIds();
@@ -21,7 +22,7 @@ function App() {
   return (
     <div className="bg-gray-200">
       <Routes>
-        <Route path="*" element={<Navigate to={"/"} replace />} />
+        <Route path="*" element={<Page404 />} />
         <Route path="/" element={<PokemonIndexPage />} />
         <Route path="/pokemon/:id" element={<PokemonDetailsPage />} />
         <Route path="/user/:id" element={<UserPage />} />

@@ -10,15 +10,17 @@ import {
 } from "react-icons/lu";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import axios from "axios";
-import { Loading } from "../components/Loding";
+import { Loading } from "../components/Loading/Loding";
 import { convertDecimeters, convertHectograms } from "../utils/calculations";
 import { useFavIds } from "../utils/useFavIds";
 import { useUser } from "@clerk/clerk-react";
 import { addToFavorites, removeFavorite } from "../utils/supabaseRequests";
+import { Page404 } from "./404";
 
 export const PokemonDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const [pokemon, setPokemon] = useState<PokemonDetails | null>(null);
+  const [notExisting, setNotExisting] = useState<boolean>(false);
   const { favIds, addFavId, removeFavId } = useFavIds();
   const { user } = useUser();
 
@@ -26,31 +28,25 @@ export const PokemonDetailsPage = () => {
     let isMounted = true;
 
     const fetchPokemonData = async () => {
-      try {
-        const startTime = Date.now();
+      const startTime = Date.now();
 
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_API_URL}/pokemon/${id}`,
-        );
+      await axios
+        .get(`${import.meta.env.VITE_BASE_API_URL}/pokemon/${id}`)
+        .then(async (response) => {
+          const elapsedTime = Date.now() - startTime;
+          const delay = Math.max(1500 - elapsedTime, 0);
 
-        const elapsedTime = Date.now() - startTime;
-        const delay = Math.max(1500 - elapsedTime, 0);
-
-        if (isMounted) {
-          setTimeout(() => {
-            setPokemon(response.data);
-          }, delay);
-
-          const speciesUrl = response.data.species.url;
-          const speciesResponse = await axios.get(speciesUrl);
-          const evolutionChainUrl = speciesResponse.data.evolution_chain.url;
-          const evolutionChainResponse = await axios.get(evolutionChainUrl);
-          const evolutionChainData = evolutionChainResponse.data;
-          console.log("evolution", evolutionChainData);
-        }
-      } catch (error) {
-        console.error("Error fetching Pokemon data:", error);
-      }
+          if (isMounted) {
+            setTimeout(() => {
+              setPokemon(response.data);
+            }, delay);
+          }
+        })
+        .catch((err) => {
+          if (err.response.status === 404) {
+            setNotExisting(true);
+          }
+        });
     };
 
     fetchPokemonData();
@@ -60,6 +56,13 @@ export const PokemonDetailsPage = () => {
     };
   }, [id]);
 
+  if (notExisting) {
+    return (
+      <Page404
+        text={`Pokemon with id: #${id?.toString().padStart(4, "0")} does not exist`}
+      />
+    );
+  }
   if (!pokemon) {
     return <Loading />;
   }
@@ -71,7 +74,7 @@ export const PokemonDetailsPage = () => {
           <img
             src={pokemon.sprites.other["official-artwork"].front_default}
             alt={pokemon.name}
-            className="max-w-full max-h-full"
+            className="max-w-full max-h-full drag-none"
           />
         </div>
         <div className="flex-1 bg-gray-100 p-8 items-center  justify-center relative">
@@ -118,6 +121,7 @@ export const PokemonDetailsPage = () => {
                     user?.id && addToFavorites(user.id, pokemon.id, addFavId);
                   }
                 }}
+                className="cursor-pointer"
               >
                 {favIds?.includes(pokemon?.id) ? (
                   <FaHeart className="absolute top-10 z-50 hover:scale-110 right-12 w-8 h-8 text-pink-500 " />

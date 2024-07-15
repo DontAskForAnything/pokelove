@@ -9,14 +9,14 @@ export const MePage = () => {
   const { favIds, removeFavId } = useFavIds();
 
   return (
-    <div className="flex-1 flex h-screen">
+    <div className="flex-1 flex min-h-screen">
       <div className="m-4 shadow-lg rounded-xl w-full flex-1  bg-gray-100 overflow-hidden">
         <div className="bg-gray-300 flex-row p-4 flex justify-between items-center relative">
           <div className="bg-gray-300 flex-row flex items-center">
             <img
               src={user?.imageUrl}
               alt={"@" + user?.username + "avatar"}
-              className="h-24 aspect-square rounded-xl hover:scale-105 cursor-pointer"
+              className="h-24 aspect-square rounded-xl drag-none"
             />
             <h2 className="ml-4 text-4xl font-semibold mb-2 text-center">
               @{user?.username}
@@ -31,7 +31,7 @@ export const MePage = () => {
                   .then(() => alert(`Copied your share url to clipboard`))
                   .catch((err) => console.error("Failed to copy:", err));
               }}
-              className="h-5 w-6 rounded-tl-xl ml-4 cursor-pointer  font-semibold opacity-80 hover:opacity-100 hover:scale-125 text-black"
+              className="h-5 w-6 rounded-tl-xl ml-4 cursor-pointer transition-transform  duration-300 font-semibold opacity-80 hover:opacity-100 hover:scale-125 text-black"
             />
           </div>
           <SignOutButton>
@@ -41,7 +41,7 @@ export const MePage = () => {
                   removeFavId(id);
                 });
               }}
-              className="absolute top-0 right-0 pr-6 pl-6 rounded-bl-xl pt-4 pb-4 bg-white cursor-pointer font-bold opacity-80 hover:opacity-100 hover:scale-105 text-black"
+              className="absolute  transition-transform  duration-300 top-0 right-0 pr-6 pl-6 rounded-bl-xl pt-4 pb-4 bg-white cursor-pointer font-bold opacity-80 hover:opacity-100 hover:scale-105 text-black"
             >
               Sign Out
             </div>

@@ -4,11 +4,13 @@ import { UserWithFavorites } from "../utils/interfaces";
 import { fetchUserDataAndFavorites } from "../utils/supabaseRequests";
 import { PokemonBox } from "../components/PokemonBox";
 import { NoFavoritePokemons } from "../components/NoFavouritePokemons";
-import { Loading } from "../components/Loding";
+import { Loading } from "../components/Loading/Loding";
+import { Page404 } from "./404";
 
 export const UserPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [data, setData] = useState<UserWithFavorites | null>();
+  const [data, setData] = useState<UserWithFavorites | null>(null);
+  const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -29,24 +31,25 @@ export const UserPage = () => {
             }, delay);
           }
         })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          setLoading(false);
+        .catch(() => {
+          setError(true);
         });
     }
-
     return () => {
       isMounted = false;
     };
   }, [id]);
 
+  if (error) {
+    return <Page404 text={"This user does not exist"} />;
+  }
   if (loading) {
     return <Loading />;
   }
 
   return (
-    <div className="flex-1 flex h-screen">
-      <div className="m-4 shadow-lg rounded-xl w-full flex-1  bg-gray-100 ">
+    <div className="flex-1 flex min-h-screen">
+      <div className="m-4 shadow-lg rounded-xl w-full overflow-hidden  bg-gray-100 ">
         {data?.favorite_pokemons_id.length ? (
           <div className="flex-1 bg-gray-100  flex  flex-col">
             <h2 className="ml-4 text-4xl  mb-2 text-center p-6">

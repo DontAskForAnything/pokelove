@@ -60,40 +60,35 @@ export async function addToFavorites(
 export const fetchUserDataAndFavorites = async (
   userId: string,
 ): Promise<UserWithFavorites | null> => {
-  try {
-    const { data: userData, error: userError } = await supabase
-      .from("users")
-      .select("*")
-      .eq("user_id", userId)
-      .single();
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
 
-    if (userError) {
-      throw new Error(`Error fetching user data: ${userError.message}`);
-    }
-
-    const { data: favoritePokemons, error: favoriteError } = await supabase
-      .from("favorites")
-      .select("pokemon_id")
-      .eq("user_id", userId);
-
-    if (favoriteError) {
-      throw new Error(
-        `Error fetching favorite Pokemon IDs: ${favoriteError.message}`,
-      );
-    }
-
-    const favoritePokemonIds = favoritePokemons.map(
-      (pokemon) => pokemon.pokemon_id,
-    );
-
-    return {
-      user: userData,
-      favorite_pokemons_id: favoritePokemonIds,
-    };
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return null;
+  if (userError) {
+    throw new Error(`Error fetching user data: ${userError.message}`);
   }
+
+  const { data: favoritePokemons, error: favoriteError } = await supabase
+    .from("favorites")
+    .select("pokemon_id")
+    .eq("user_id", userId);
+
+  if (favoriteError) {
+    throw new Error(
+      `Error fetching favorite Pokemon IDs: ${favoriteError.message}`,
+    );
+  }
+
+  const favoritePokemonIds = favoritePokemons.map(
+    (pokemon) => pokemon.pokemon_id,
+  );
+
+  return {
+    user: userData,
+    favorite_pokemons_id: favoritePokemonIds,
+  };
 };
 
 export const getRandomUsers = async (user_id: string): Promise<User[]> => {
@@ -103,7 +98,7 @@ export const getRandomUsers = async (user_id: string): Promise<User[]> => {
     .neq("user_id", user_id);
 
   if (error) {
-    console.error("Error while removing favourite pokemon:", error.message);
+    console.error("Error while removing favorite pokemon:", error.message);
     throw new Error(error.message);
   }
 
